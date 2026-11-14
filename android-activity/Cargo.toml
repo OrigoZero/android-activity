@@ -24,6 +24,12 @@ default = []
 game-activity = ["simd_cesu8"]
 native-activity = []
 api-level-30 = ["ndk/api-level-30"]
+# Leaves the process's stdout and stderr where the platform put them. By
+# default each activity's creation points both at a pipe whose lines a thread
+# writes to logcat under the tag `RustStdoutStderr`; with this feature nothing
+# does, and an application that writes to logcat states what it writes there
+# itself.
+no-stdio-to-logcat = []
 
 [dependencies]
 log = "0.4"
