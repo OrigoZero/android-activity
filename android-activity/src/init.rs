@@ -171,7 +171,10 @@ pub(crate) unsafe fn init_java_main_thread_on_create(
     jni_activity: *mut c_void,
     saved_state: &[u8],
 ) {
-    let _join_log_forwarder = forward_stdio_to_logcat();
+    // The `no-stdio-to-logcat` feature leaves stdout and stderr alone.
+    if cfg!(not(feature = "no-stdio-to-logcat")) {
+        let _join_log_forwarder = forward_stdio_to_logcat();
+    }
 
     let msg = CString::new(format!(
         "Creating: Activity = {:p}, saved state size = {}",
