@@ -2284,7 +2284,7 @@ pub struct GameTextInput {
     _unused: [u8; 0],
 }
 unsafe extern "C" {
-    #[doc = " Initialize the GameTextInput library.\n If called twice without GameTextInput_destroy being called, the same pointer\n will be returned and a warning will be issued.\n @param env A JNI env valid on the calling thread. All other calls to the resulting GameTextInput\n object must be done on the same calling thread.\n @param max_string_size The maximum length of a string that can be edited. If\n zero, the maximum defaults to 65536 bytes. A buffer of this size is allocated\n at initialization.\n @return A handle to the library."]
+    #[doc = " Initialize an instance of the GameTextInput library.\n Each call returns an instance of its own, which GameTextInput_destroy frees.\n @param env A JNI env valid on the calling thread. All other calls to the resulting GameTextInput\n object must be done on the same calling thread.\n @param max_string_size The maximum length of a string that can be edited. If\n zero, the maximum defaults to 65536 bytes. A buffer of this size is allocated\n at initialization.\n @return A handle to the library."]
     pub fn GameTextInput_init(env: *mut JNIEnv, max_string_size: u32) -> *mut GameTextInput;
 }
 unsafe extern "C" {
@@ -2296,7 +2296,7 @@ unsafe extern "C" {
     pub fn GameTextInput_processEvent(input: *mut GameTextInput, eventState: jobject);
 }
 unsafe extern "C" {
-    #[doc = " Free any resources owned by the GameTextInput library.\n Any subsequent calls to the library will fail until GameTextInput_init is\n called again.\n @param input A valid GameTextInput library handle."]
+    #[doc = " Free the GameTextInput instance `input` and the resources it owns.\n Other instances are left as they are.\n @param input A GameTextInput library handle, or NULL."]
     pub fn GameTextInput_destroy(input: *mut GameTextInput);
 }
 pub const ShowImeFlags_SHOW_IME_UNDEFINED: ShowImeFlags = 0;

@@ -91,8 +91,6 @@ private:
     std::vector<char> stateStringBuffer_;
 };
 
-std::unique_ptr<GameTextInput> s_gameTextInput;
-
 extern "C" {
 
 ///////////////////////////////////////////////////////////
@@ -115,21 +113,15 @@ void currentState_fromJava(const GameTextInput* gameTextInput, jobject textInput
 /// GameTextInput C Functions
 ///////////////////////////////////////////////////////////
 
+// Each call makes an instance of its own, which GameTextInput_destroy frees:
+// every GameActivity of a process holds one, and an activity starting while
+// another is still alive keeps its instance when the other is destroyed.
 struct GameTextInput* GameTextInput_init(JNIEnv* env, uint32_t max_string_size) {
-    if (s_gameTextInput.get() != nullptr) {
-        __android_log_print(ANDROID_LOG_WARN, LOG_TAG,
-                            "Warning: called GameTextInput_init twice without "
-                            "calling GameTextInput_destroy");
-        return s_gameTextInput.get();
-    }
-    // Don't use make_unique, for C++11 compatibility
-    s_gameTextInput = std::unique_ptr<GameTextInput>(new GameTextInput(env, max_string_size));
-    return s_gameTextInput.get();
+    return new GameTextInput(env, max_string_size);
 }
 
 void GameTextInput_destroy(GameTextInput* input) {
-    if (input == nullptr || s_gameTextInput.get() == nullptr) return;
-    s_gameTextInput.reset();
+    delete input;
 }
 
 void GameTextInput_setState(GameTextInput* input, const GameTextInputState* state) {

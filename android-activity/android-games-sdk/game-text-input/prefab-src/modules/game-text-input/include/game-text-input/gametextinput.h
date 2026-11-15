@@ -99,9 +99,8 @@ typedef void (*GameTextInputGetStateCallback)(void* context,
 typedef struct GameTextInput GameTextInput;
 
 /**
- * Initialize the GameTextInput library.
- * If called twice without GameTextInput_destroy being called, the same pointer
- * will be returned and a warning will be issued.
+ * Initialize an instance of the GameTextInput library.
+ * Each call returns an instance of its own, which GameTextInput_destroy frees.
  * @param env A JNI env valid on the calling thread. All other calls to the resulting GameTextInput
  * object must be done on the same calling thread.
  * @param max_string_size The maximum length of a string that can be edited. If
@@ -132,10 +131,9 @@ void GameTextInput_setInputConnection(GameTextInput* input, jobject inputConnect
 void GameTextInput_processEvent(GameTextInput* input, jobject eventState);
 
 /**
- * Free any resources owned by the GameTextInput library.
- * Any subsequent calls to the library will fail until GameTextInput_init is
- * called again.
- * @param input A valid GameTextInput library handle.
+ * Free the GameTextInput instance `input` and the resources it owns.
+ * Other instances are left as they are.
+ * @param input A GameTextInput library handle, or NULL.
  */
 void GameTextInput_destroy(GameTextInput* input);
 
